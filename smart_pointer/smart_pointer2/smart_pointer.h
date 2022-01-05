@@ -19,6 +19,13 @@ namespace tiny
 
         }
 
+        //子类指针要能够隐式转换成父类指针
+        template<typename U>
+        smart_unique_pointer(smart_unique_pointer<U>&& other)
+        {
+            m_ptr = other.release();
+        }
+
         //析构函数
         ~smart_unique_pointer()
         {
@@ -38,8 +45,8 @@ namespace tiny
             other.swap(*this);
             return *this;
         }
-    
-    private:
+
+        //需要设置为public，子类智能指针赋值给父类智能指针时才能看到,子类智能指针类和父类智能指针类是两个不同的类
         T* release()
         {
             T* p = m_ptr;
@@ -47,6 +54,8 @@ namespace tiny
             return p;
         }
 
+    private:
+        
         void swap(smart_unique_pointer& other)
         {
             using std::swap;
